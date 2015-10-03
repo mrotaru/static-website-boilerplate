@@ -1,0 +1,34 @@
+{
+  "name": "static-website-boilerplate",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./src/js/main.js",
+  "scripts": {
+    "build": "npm run build:js && npm run build:css && npm run build:img && npm run build:html",
+    "clean": "rimraf dist/*",
+    "prebuild": "npm run clean -s && mkdirp dist/js/vendor dist/css/vendor dist/img dist/fonts",
+    "build:vendor:js": "hashmark node_modules/{bootstrap/dist/js/bootstrap.min.js,jquery/dist/jquery.min.js} -s -l 8 -m assets.json dist/js/vendor/{name}.{hash}{ext}",
+    "build:vendor:css": "hashmark node_modules/{bootstrap/dist/css/bootstrap.min.css,bootstrap/dist/css/bootstrap-theme.css} -s -l 8 -m assets.json dist/css/{name}.{hash}{ext}",
+    "build:js": "npm run build:vendor:js && npm run build:own:js",
+    "build:css": "npm run build:vendor:css && npm run build:own:css",
+    "build:fonts": "cp -r node_modules/bootstrap/dist/fonts dist/",
+    "build:own:js": "uglifyjs src/js/main.js -c -m | hashmark -n main.js -s -l 8 -m assets.json dist/js/main.min.{hash}.js",
+    "build:own:css": "node-sass --output-style compressed src/scss/main.scss | hashmark -s -n main.scss -l 8 -m assets.json dist/css/main.min.{hash}.css",
+    "build:img": "cp -r src/img dist",
+    "build:html": "jade src/jade -o dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "hashmark": "^2.0.0",
+    "jade": "^1.7.0",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.2.8",
+    "s3-cli": "^0.11.1"
+  },
+  "author": "Mihai Rotaru <mihai.rotaru@gmx.com> (http://mrotaru.co.uk/)",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^3.3.5",
+    "jquery": "^1.11.3"
+  }
+}
